@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resilient™ | OS v2.0 - Stream</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0A0A0A;
+            --text-main: #F5F5F0;
+            --accent: #404040;
+            --panel-bg: rgba(15, 15, 15, 0.6);
+        }
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent; /* Mejora tacto en móvil */
+        }
+        .header-font { font-family: 'Syncopate', sans-serif; letter-spacing: -0.05em; }
+        
+        @keyframes scan { 0% { top: -10%; } 100% { top: 110%; } }
+        .scan-line {
+            position: fixed; width: 100%; height: 2px;
+            background: rgba(255,255,255,0.03);
+            z-index: 999; pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-panel:hover { border-color: rgba(255, 255, 255, 0.2); }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .nav-link { position: relative; transition: opacity 0.3s; }
+        .nav-link.active { opacity: 1; color: #fff; font-weight: bold; }
+        .nav-link.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; 
+            width: 100%; height: 1px; background: white;
+        }
+
+        .bg-text {
+            position: absolute; font-size: 25vw; font-weight: 900;
+            color: rgba(255,255,255,0.02); z-index: -1;
+            white-space: nowrap; user-select: none;
+        }
+
+        .size-chip, .garment-chip {
+            padding: 10px 14px; /* Aumentado para móviles */
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .size-chip.active, .garment-chip.active {
+            background: white;
+            color: black;
+            border-color: white;
+            font-weight: bold;
+        }
+
+        /* Input Range personalizado para móviles */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        #entityImage {
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+    <div class="scan-line"></div>
+
+    <!-- Navegación Sticky -->
+    <nav class="fixed top-0 w-full z-[100] glass-panel px-4 md:px-12 py-4 md:py-5 flex justify-between items-center border-b border-white/5">
+        <div class="header-font font-black text-lg md:text-xl flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+            <span class="w-2 h-2 bg-white rounded-full"></span>
+            RESILIENT<span class="opacity-20">®</span>
+        </div>
+        
+        <div class="hidden lg:flex gap-8 text-[10px] font-bold uppercase tracking-[0.4em]">
+            <a href="#view-home" class="nav-link active">Home</a>
+            <a href="#view-collection" class="nav-link">Catalog</a>
+            <a href="#view-specs" class="nav-link">Fit_Lab</a>
+            <a href="#view-materials" class="nav-link">Tech</a>
+            <a href="#view-terminal" class="nav-link">Pay</a>
+        </div>
+
+        <div class="text-[8px] md:text-[9px] opacity-40 uppercase font-mono">System: Active_</div>
+    </nav>
+
+    <!-- SECCIÓN 01: HOME -->
+    <section id="view-home" class="min-h-screen flex items-center px-6 md:px-20 relative overflow-hidden">
+        <div class="bg-text top-10 -left-20 italic">RESILIENT</div>
+        <div class="max-w-7xl mx-auto w-full pt-20">
+            <div class="mb-4 md:mb-6 text-[8px] md:text-[10px] uppercase tracking-[0.5em] md:tracking-[0.8em] opacity-30 text-center md:text-left">Evolutionary Cloth Engineering</div>
+            <h1 class="header-font text-[14vw] md:text-[10vw] font-black uppercase leading-[0.85] mb-8 md:mb-12 italic reveal active text-center md:text-left">
+                THE<br>INNER ARC<br><span class="opacity-10">DROP I</span>
+            </h1>
+            <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-end reveal active">
+                <p class="text-[10px] md:text-xs leading-loose opacity-50 uppercase max-w-sm text-center md:text-left mx-auto md:mx-0">
+                    No fabricamos ropa, diseñamos armaduras urbanas. Cada costura es una declaración de resistencia. Inspirado en la brutalidad del anime y la elegancia del concreto.
+                </p>
+                <div class="text-right hidden md:block">
+                    <div class="text-[8px] uppercase tracking-widest opacity-20 mb-2">Scroll to explore data_</div>
+                    <div class="w-px h-20 bg-gradient-to-b from-white to-transparent inline-block animate-bounce"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 02: CATALOG -->
+    <section id="view-collection" class="min-h-screen py-20 md:py-32 px-4 md:px-20 border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline mb-12 md:mb-16 gap-6">
+                <h2 class="header-font text-4xl md:text-5xl font-black uppercase italic reveal">ENTITY_CATALOG</h2>
+                <div id="typeSelector" class="flex gap-4 md:gap-6 reveal">
+                    <span class="text-[10px] border-b-2 border-white pb-1">ALL_ENTITIES</span>
+                </div>
+            </div>
+            
+            <div class="grid lg:grid-cols-12 gap-8 md:gap-10">
+                <!-- Selector y Datos -->
+                <div class="lg:col-span-4 order-2 lg:order-1 space-y-6 reveal">
+                    <div id="entityGrid" class="grid grid-cols-2 gap-2"></div>
+                    
+                    <div class="glass-panel p-6 md:p-8 border-l-4 border-white">
+                        <h3 id="entityName" class="header-font text-3xl md:text-4xl font-bold uppercase italic mb-2">---</h3>
+                        <p id="entityDesc" class="text-[10px] md:text-[11px] leading-relaxed uppercase opacity-70 mb-8">Cargando...</p>
+                        
+                        <div class="mb-6">
+                            <p class="text-[9px] uppercase opacity-40 mb-3 tracking-widest">Garment_Type_</p>
+                            <div class="grid grid-cols-3 gap-2" id="garmentTypeSelector">
+                                <div class="garment-chip active" data-type="tshirt" onclick="selectGarment('tshirt')">T-Shirt</div>
+                                <div class="garment-chip" data-type="tank" onclick="selectGarment('tank')">Tank</div>
+                                <div class="garment-chip" data-type="hoodie" onclick="selectGarment('hoodie')">Hoodie</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <p class="text-[9px] uppercase opacity-40 mb-3 tracking-widest">Select_Size_</p>
+                            <div class="grid grid-cols-4 gap-2" id="catalogSizeSelector">
+                                <div class="size-chip" onclick="selectSize('S')">S</div>
+                                <div class="size-chip active" onclick="selectSize('M')">M</div>
+                                <div class="size-chip" onclick="selectSize('L')">L</div>
+                                <div class="size-chip" onclick="selectSize('XL')">XL</div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-baseline pt-4 border-t border-white/5">
+                            <span class="text-[10px] opacity-40 uppercase">Price_Est_</span>
+                            <span id="entityPrice" class="header-font text-2xl font-bold">$00.000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imagen Principal -->
+                <div class="lg:col-span-5 order-1 lg:order-2 reveal">
+                    <div class="glass-panel aspect-[4/5] overflow-hidden relative">
+                        <img id="entityImage" src="" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                </div>
+
+                <!-- Radar y Orden -->
+                <div class="lg:col-span-3 order-3 reveal">
+                    <div class="h-48 md:h-64 mb-6">
+                        <canvas id="entityRadar"></canvas>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-4 border border-white/10 text-[8px] md:text-[9px] uppercase tracking-tighter opacity-40 text-center">
+                            [!] NFC Authenticity Tag Included. Industrial Vacuum Packaging.
+                        </div>
+                        <a href="#view-terminal" class="block text-center bg-white text-black font-bold py-5 text-xs uppercase tracking-widest hover:invert transition-all">
+                            ORDER_NOW
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FIT LAB -->
+    <section id="view-specs" class="min-h-screen py-20 md:py-32 px-4 md:px-20 bg-neutral-900/20">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 md:mb-20 reveal">
+                <h2 class="header-font text-4xl md:text-6xl font-black uppercase italic">Fit_Lab</h2>
+                <p class="text-[9px] md:text-[10px] tracking-[0.3em] md:tracking-[0.5em] opacity-30 uppercase pb-2">Body Dimension Algorithm v2.1</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-10 md:gap-20">
+                <div class="glass-panel p-6 md:p-10 space-y-10 md:space-y-12 reveal">
+                    <div>
+                        <label class="text-[10px] uppercase font-bold tracking-widest block mb-4 md:mb-6 opacity-40 italic">01_Body_Height (cm)</label>
+                        <input type="range" min="150" max="210" value="175" class="w-full accent-white h-1.5 bg-white/10 appearance-none rounded-lg" id="rangeHeight" oninput="calculateFit()">
+                        <div class="flex justify-between mt-4 font-bold text-xl md:text-2xl italic"><span id="valHeight">175</span><span>cm</span></div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase font-bold tracking-widest block mb-4 md:mb-6 opacity-40 italic">02_Body_Mass (kg)</label>
+                        <input type="range" min="45" max="120" value="70" class="w-full accent-white h-1.5 bg-white/10 appearance-none rounded-lg" id="rangeWeight" oninput="calculateFit()">
+                        <div class="flex justify-between mt-4 font-bold text-xl md:text-2xl italic"><span id="valWeight">70</span><span>kg</span></div>
+                    </div>
+
+                    <div class="pt-10 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-[9px] md:text-[10px] uppercase font-bold opacity-30">Recommended:</span>
+                        <div id="fitResult" class="header-font text-4xl md:text-6xl font-black italic animate-pulse">SIZE_M</div>
+                    </div>
+                </div>
+
+                <div class="reveal overflow-x-auto">
+                    <ul class="min-w-[300px] space-y-1" id="sizeTable">
+                        <li class="flex justify-between p-4 opacity-30 text-[9px] font-bold border-b border-white/5 uppercase">
+                            <span>Talla</span><span>Ancho</span><span>Largo</span>
+                        </li>
+                        <li class="size-row flex justify-between p-5 md:p-6 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer" onclick="selectSize('S')">
+                            <span class="header-font italic font-bold">SIZE_S</span><span>55 CM</span><span>72 CM</span>
+                        </li>
+                        <li class="size-row flex justify-between p-5 md:p-6 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer" onclick="selectSize('M')">
+                            <span class="header-font italic font-bold">SIZE_M</span><span>57 CM</span><span>74 CM</span>
+                        </li>
+                        <li class="size-row flex justify-between p-5 md:p-6 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer" onclick="selectSize('L')">
+                            <span class="header-font italic font-bold">SIZE_L</span><span>59 CM</span><span>76 CM</span>
+                        </li>
+                        <li class="size-row flex justify-between p-5 md:p-6 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer" onclick="selectSize('XL')">
+                            <span class="header-font italic font-bold">SIZE_XL</span><span>62 CM</span><span>79 CM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAYMENTS -->
+    <section id="view-terminal" class="min-h-screen py-20 md:py-32 px-4 md:px-20 bg-white text-black">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="header-font text-4xl md:text-7xl font-black uppercase italic mb-12 md:mb-20 leading-none">PAYMENT_GATEWAY</h2>
+            <div class="grid md:grid-cols-2 gap-8 md:gap-10 reveal">
+                <div class="space-y-4 md:space-y-6">
+                    <div class="border-2 md:border-4 border-black p-6 md:p-8 hover:bg-black hover:text-white transition-all cursor-pointer group" onclick="copyValue('3147654816')">
+                        <span class="text-[9px] font-black uppercase opacity-40 mb-2 block tracking-widest">01_Nequi</span>
+                        <div class="text-xl md:text-3xl font-bold header-font">314 765 4816</div>
+                    </div>
+                    <div class="border-2 md:border-4 border-black p-6 md:p-8 hover:bg-black hover:text-white transition-all cursor-pointer group" onclick="copyValue('86800059269')">
+                        <span class="text-[9px] font-black uppercase opacity-40 mb-2 block tracking-widest">02_Bancolombia</span>
+                        <div class="text-xl md:text-3xl font-bold header-font">868-000592-69</div>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-between border-t-2 md:border-t-0 md:border-l-4 border-black pt-8 md:pt-0 md:pl-10">
+                    <p class="text-[11px] md:text-xs font-bold uppercase leading-relaxed text-center md:text-left">Transfiere el monto de la unidad seleccionada y envía el comprobante por WhatsApp.</p>
+                    <button id="mainOrderBtn" onclick="sendOrder()" class="mt-8 md:mt-10 bg-black text-white py-6 md:py-8 px-8 md:px-10 header-font text-lg md:text-xl uppercase italic hover:scale-[1.02] transition-transform">VALIDATE_PAYMENT</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-white text-black px-8 py-4 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] translate-y-32 transition-transform duration-500 z-[1000] border-2 border-black whitespace-nowrap">Data_Copied_Successfully</div>
+
+    <script>
+        const DATABASE = {
+            entities: {
+                broly: { 
+                    name: "BROLY", 
+                    desc: "ENTITY_01: Poder desatado. Fit masivo con construcción de hombros caídos.", 
+                    images: { tshirt: "proyecto/img/BROLY.TSHIRT.png", tank: "proyecto/img/BROLY.TANK.png", hoodie: "proyecto/img/BROLY.HD.png" },
+                    stats: [98, 95, 80, 90] 
+                },
+                jiren: { 
+                    name: "JIREN", 
+                    desc: "ENTITY_02: Fuerza absoluta. Diseño minimalista pero con densidad superior.", 
+                    images: { tshirt: "proyecto/img/JIREN.TSHIRT.png", tank: "proyecto/img/JIREN.TANK.png", hoodie: "proyecto/img/JIREN.HD.png" },
+                    stats: [95, 98, 70, 85] 
+                },
+                vegeta: { 
+                    name: "VEGETA", 
+                    desc: "ENTITY_03: Orgullo real. Acabados técnicos y costuras reforzadas.", 
+                    images: { tshirt: "proyecto/img/VEGETA.TSHIRT.png", tank: "proyecto/img/VEGETA.TANK.png", hoodie: "proyecto/img/VEGETA.HD.png" },
+                    stats: [90, 85, 95, 95] 
+                },
+                goku: { 
+                    name: "GOKU", 
+                    desc: "ENTITY_04: Instinto dominado. El balance ideal entre comodidad y estilo.", 
+                    images: { tshirt: "proyecto/img/GOKU.TSHIRT.png", tank: "proyecto/img/GOKU.TANK.png", hoodie: "proyecto/img/GOKU.HD.png" },
+                    stats: [92, 90, 90, 100] 
+                },
+            }
+        };
+
+        const PRICES = { tshirt: 75000, tank: 60000, hoodie: 120000 };
+        let radarChart;
+        let currentEntity = 'broly';
+        let currentSize = 'M';
+        let currentGarment = 'tshirt';
+
+        window.onload = () => {
+            renderCatalogButtons();
+            initRadar();
+            syncEntity('broly');
+            setupScrollSpy();
+            revealOnScroll();
+        };
+
+        function renderCatalogButtons() {
+            const container = document.getElementById('entityGrid');
+            container.innerHTML = ''; 
+            Object.keys(DATABASE.entities).forEach(key => {
+                const entity = DATABASE.entities[key];
+                const btn = document.createElement('button');
+                btn.className = "p-3 md:p-4 border border-white/10 hover:border-white uppercase text-[8px] md:text-[9px] font-bold transition-all text-center";
+                btn.id = `btn-${key}`;
+                btn.innerText = entity.name;
+                btn.onclick = () => syncEntity(key);
+                container.appendChild(btn);
+            });
+            updateActiveButton();
+        }
+
+        function selectGarment(type) {
+            currentGarment = type;
+            document.querySelectorAll('.garment-chip').forEach(c => {
+                c.classList.toggle('active', c.getAttribute('data-type') === type);
+            });
+            updateEntityVisuals();
+            updatePrice();
+        }
+
+        function syncEntity(key) {
+            currentEntity = key;
+            const data = DATABASE.entities[key];
+            document.getElementById('entityName').innerText = data.name;
+            document.getElementById('entityDesc').innerText = data.desc;
+            updateEntityVisuals();
+            updateActiveButton();
+            radarChart.data.datasets[0].data = data.stats;
+            radarChart.update();
+            updatePrice();
+        }
+
+        function updateEntityVisuals() {
+            const imgElement = document.getElementById('entityImage');
+            const newSrc = DATABASE.entities[currentEntity].images[currentGarment];
+            imgElement.style.opacity = "0.2";
+            setTimeout(() => {
+                imgElement.src = newSrc;
+                imgElement.style.opacity = "1";
+            }, 150);
+        }
+
+        function updateActiveButton() {
+            document.querySelectorAll('#entityGrid button').forEach(b => b.classList.remove('bg-white', 'text-black'));
+            const activeBtn = document.getElementById(`btn-${currentEntity}`);
+            if (activeBtn) activeBtn.classList.add('bg-white', 'text-black');
+        }
+
+        function selectSize(size) {
+            currentSize = size;
+            document.querySelectorAll('#catalogSizeSelector .size-chip').forEach(c => {
+                c.classList.toggle('active', c.innerText === size);
+            });
+        }
+
+        function updatePrice() {
+            const price = PRICES[currentGarment];
+            document.getElementById('entityPrice').innerText = `$${price.toLocaleString('es-CO')}`;
+        }
+
+        function initRadar() {
+            const ctx = document.getElementById('entityRadar').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['PWR', 'DEN', 'TEC', 'FIT'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        borderColor: '#FFF',
+                        borderWidth: 1,
+                        backgroundColor: 'rgba(255,255,255,0.05)',
+                        pointBackgroundColor: '#FFF'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#FFF', font: { family: 'Space Mono', size: 8 } },
+                            ticks: { display: false },
+                            suggestedMin: 0, suggestedMax: 100
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function calculateFit() {
+            const h = document.getElementById('rangeHeight').value;
+            const w = document.getElementById('rangeWeight').value;
+            document.getElementById('valHeight').innerText = h;
+            document.getElementById('valWeight').innerText = w;
+            let res = "SIZE_S";
+            if (h > 185 || w > 85) res = "SIZE_XL";
+            else if (h > 175 || w > 75) res = "SIZE_L";
+            else if (h > 165 || w > 65) res = "SIZE_M";
+            document.getElementById('fitResult').innerText = res;
+        }
+
+        function copyValue(val) {
+            const t = document.createElement('textarea');
+            t.value = val; document.body.appendChild(t); t.select();
+            document.execCommand('copy'); document.body.removeChild(t);
+            const toast = document.getElementById('toast');
+            toast.style.transform = "translate( -50%, 0)";
+            setTimeout(() => toast.style.transform = "translate( -50%, 150px)", 2500);
+        }
+
+        function sendOrder() {
+            const entity = DATABASE.entities[currentEntity];
+            const price = PRICES[currentGarment];
+            const text = encodeURIComponent(`[RESILIENT_STREAM]: Hola, quiero validar mi pedido.\nUnidad: ${entity.name}\nPrenda: ${currentGarment.toUpperCase()}\nTalla: ${currentSize}\nPrecio: $${price.toLocaleString('es-CO')}`);
+            window.open(`https://wa.me/573147654816?text=${text}`, '_blank');
+        }
+
+        function setupScrollSpy() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = "";
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 150) current = section.getAttribute('id');
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) link.classList.add('active');
+                });
+            });
+        }
+
+        function revealOnScroll() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>
